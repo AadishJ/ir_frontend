@@ -17,6 +17,8 @@ import {
   CircularProgress,
   Fade,
   ListItemButton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -33,7 +35,6 @@ interface DocResult {
 
 function highlightText(text: string, terms: string[]) {
   if (!terms.length) return text;
-  // Build regex for all terms, word boundaries, case-insensitive
   const pattern = new RegExp(
     `\\b(${terms
       .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
@@ -70,6 +71,9 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<DocResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSearch = async () => {
     if (!query.trim()) {
@@ -112,21 +116,21 @@ const App: React.FC = () => {
       sx={{
         minHeight: "100vh",
         background: "linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%)",
-        py: 6,
+        py: { xs: 2, sm: 4, md: 6 },
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ px: { xs: 1, sm: 2 } }}>
         <Paper
           elevation={6}
           sx={{
-            p: 4,
+            p: { xs: 2, sm: 3, md: 4 },
             borderRadius: 4,
             background: "rgba(255,255,255,0.95)",
             boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
           }}
         >
           <Typography
-            variant="h3"
+            variant={isMobile ? "h4" : "h3"}
             fontWeight={700}
             color="primary"
             gutterBottom
@@ -134,6 +138,7 @@ const App: React.FC = () => {
               fontFamily: "Montserrat, sans-serif",
               textAlign: "center",
               letterSpacing: 1,
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             }}
           >
             Document Search Engine
@@ -141,13 +146,18 @@ const App: React.FC = () => {
           <Typography
             variant="subtitle1"
             color="text.secondary"
-            sx={{ textAlign: "center", mb: 3 }}
+            sx={{
+              textAlign: "center",
+              mb: 3,
+              fontSize: { xs: "1rem", sm: "1.1rem" },
+            }}
           >
             Enter your query to search across your document corpus.
           </Typography>
           <Box
             sx={{
               display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
               gap: 2,
               mb: 2,
               justifyContent: "center",
@@ -184,19 +194,21 @@ const App: React.FC = () => {
                 background: "#f4f6fb",
                 borderRadius: 2,
                 boxShadow: "0 1px 4px #e0e7ff",
+                fontSize: { xs: "1rem", sm: "1.1rem" },
               }}
             />
             <Button
               variant="contained"
               color="primary"
-              size="large"
+              size={isMobile ? "medium" : "large"}
               onClick={handleSearch}
               sx={{
-                px: 4,
-                py: 1.5,
+                px: { xs: 2, sm: 4 },
+                py: { xs: 1, sm: 1.5 },
                 fontWeight: 600,
                 borderRadius: 2,
                 boxShadow: "0 2px 8px #c7d2fe",
+                width: { xs: "100%", sm: "auto" },
               }}
               disabled={loading}
               endIcon={<SearchIcon />}
@@ -228,13 +240,14 @@ const App: React.FC = () => {
                   fontWeight: 600,
                   color: "#3730a3",
                   letterSpacing: 0.5,
+                  fontSize: { xs: "1.1rem", sm: "1.25rem" },
                 }}
               >
                 Top Results:
               </Typography>
               <Paper
                 sx={{
-                  maxHeight: 350,
+                  maxHeight: { xs: 250, sm: 350 },
                   overflow: "auto",
                   borderRadius: 2,
                   background: "#f1f5f9",
@@ -301,7 +314,11 @@ const App: React.FC = () => {
           }}
         >
           <Box>
-            <Typography variant="h6" fontWeight={700}>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              fontSize={{ xs: "1.1rem", sm: "1.25rem" }}
+            >
               {selectedDoc?.filename}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -312,20 +329,23 @@ const App: React.FC = () => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent dividers sx={{ background: "#f4f6fb" }}>
+        <DialogContent
+          dividers
+          sx={{ background: "#f4f6fb", p: { xs: 1, sm: 2 } }}
+        >
           <Box
             sx={{
               fontFamily: "Menlo, monospace",
-              fontSize: "1.05rem",
+              fontSize: { xs: "0.95rem", sm: "1.05rem" },
               color: "#22223b",
               lineHeight: 1.7,
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
               background: "#f4f6fb",
               borderRadius: 2,
-              p: 2,
-              minHeight: 300,
-              maxHeight: 600,
+              p: { xs: 1, sm: 2 },
+              minHeight: { xs: 150, sm: 300 },
+              maxHeight: { xs: 300, sm: 600 },
               overflow: "auto",
             }}
           >
