@@ -102,7 +102,7 @@ const App: React.FC = () => {
         setResults(data.results);
       }
     } catch (e) {
-      setError("Could not connect to backend.");
+      setError("No document found.");
     }
     setLoading(false);
   };
